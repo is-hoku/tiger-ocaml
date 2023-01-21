@@ -1,0 +1,5 @@
+(executable
+ (public_name straight_line_program)
+ (name interpreter)
+ (package straight_line_program)
+ (libraries straight_line_program))
