@@ -14,3 +14,4 @@ and exp =
 
 val maxargs : stm -> int
 val maxargs_exp : exp -> int
+val interp : stm -> unit

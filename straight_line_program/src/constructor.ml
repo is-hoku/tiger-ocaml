@@ -22,13 +22,54 @@ let rec max_list a =
 
 let rec maxargs s =
   match s with
-  | CompoundStm (a, b) -> max (maxargs a, maxargs b)
-  | AssignStm (_, a) -> maxargs_exp a
-  | PrintStm a -> max (List.length a, max_list (List.map maxargs_exp a))
+  | CompoundStm (s1, s2) -> max (maxargs s1, maxargs s2)
+  | AssignStm (_, s1) -> maxargs_exp s1
+  | PrintStm el -> max (List.length el, max_list (List.map maxargs_exp el))
 
 and maxargs_exp e =
   match e with
   | IdExp _ -> 0
   | NumExp _ -> 0
-  | OpExp (a, _, b) -> max (maxargs_exp a, maxargs_exp b)
-  | EseqExp (a, b) -> max (maxargs a, maxargs_exp b)
+  | OpExp (e1, _, e2) -> max (maxargs_exp e1, maxargs_exp e2)
+  | EseqExp (s1, e1) -> max (maxargs s1, maxargs_exp e1)
+
+let calcurate (a, op, b) =
+  match op with Plus -> a + b | Minus -> a - b | Times -> a * b | Div -> a / b
+
+let rec print_table t =
+  match t with
+  | [] -> ()
+  | (id1, v) :: tl ->
+      print_string (id1 ^ ":");
+      print_int v;
+      print_string ", ";
+      print_table tl
+
+let rec interpStm (s, t) =
+  match s with
+  | CompoundStm (s1, s2) ->
+      let t1 = interpStm (s1, t) in
+      interpStm (s2, t1)
+  | AssignStm (id1, e1) ->
+      let v, t1 = interpExp (e1, t) in
+      (id1, v) :: t1
+  | PrintStm _ -> t
+
+and lookup (id1, t) =
+  match t with
+  | [] -> failwith "lookup called on empty list"
+  | (id0, v) :: tl -> if id0 = id1 then v else lookup (id1, tl)
+
+and interpExp (e, t) =
+  match e with
+  | IdExp id1 -> (lookup (id1, t), t)
+  | NumExp e1 -> (e1, t)
+  | OpExp (e1, op, e2) ->
+      let v1, t1 = interpExp (e1, t) in
+      let v2, t2 = interpExp (e2, t1) in
+      (calcurate (v1, op, v2), t2)
+  | EseqExp (s1, e1) ->
+      let t1 = interpStm (s1, t) in
+      interpExp (e1, t1)
+
+let interp p = print_table (interpStm (p, []))

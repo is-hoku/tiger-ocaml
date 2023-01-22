@@ -13,4 +13,6 @@ let prog =
 
 let () =
   print_string "max number of print statement arguments is ";
-  print_int (maxargs prog)
+  print_int (maxargs prog);
+  print_newline ();
+  interp prog
