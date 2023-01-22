@@ -42,8 +42,13 @@ let rec print_table t =
   | (id1, v) :: tl ->
       print_string (id1 ^ ":");
       print_int v;
-      print_string ", ";
+      print_char ' ';
       print_table tl
+
+let rec lookup (id1, t) =
+  match t with
+  | [] -> failwith "lookup called on empty list"
+  | (id0, v) :: tl -> if id0 = id1 then v else lookup (id1, tl)
 
 let rec interpStm (s, t) =
   match s with
@@ -53,12 +58,10 @@ let rec interpStm (s, t) =
   | AssignStm (id1, e1) ->
       let v, t1 = interpExp (e1, t) in
       (id1, v) :: t1
-  | PrintStm _ -> t
-
-and lookup (id1, t) =
-  match t with
-  | [] -> failwith "lookup called on empty list"
-  | (id0, v) :: tl -> if id0 = id1 then v else lookup (id1, tl)
+  | PrintStm el ->
+      let t1 = print_exp_list (el, t) in
+      print_newline ();
+      t1
 
 and interpExp (e, t) =
   match e with
@@ -71,5 +74,14 @@ and interpExp (e, t) =
   | EseqExp (s1, e1) ->
       let t1 = interpStm (s1, t) in
       interpExp (e1, t1)
+
+and print_exp_list (el, t) =
+  match el with
+  | [] -> t
+  | e :: etl ->
+      let v, t1 = interpExp (e, t) in
+      print_int v;
+      print_char ' ';
+      print_exp_list (etl, t1)
 
 let interp p = print_table (interpStm (p, []))
