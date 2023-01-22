@@ -27,4 +27,10 @@
  (description "straight-line program")
  (depends ocaml dune))
 
+(package
+ (name binary_search_tree)
+ (synopsis "Binary Search Tree")
+ (description "binary search tree")
+ (depends ocaml dune))
+
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project

@@ -1,0 +1,3 @@
+(library
+ (public_name binary_search_tree)
+ (name binary_search_tree))
