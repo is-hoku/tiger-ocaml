@@ -1,4 +1,4 @@
-open Straight_line_program.Constructor
+open Straight_line_program.Interpreter
 
 let prog =
   CompoundStm
