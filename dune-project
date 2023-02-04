@@ -33,4 +33,9 @@
  (description "binary search tree")
  (depends ocaml dune))
 
+(package
+ (name lexcal_analysis)
+ (synopsis "Lexcal Analysis")
+ (description "lexcal analyzer")
+ (depends ocaml dune))
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
