@@ -87,6 +87,6 @@ let to_string t =
   | COLON -> ":"
   | COMMA -> ","
   | INT n -> string_of_int n
-  | ID s -> s
+  | ID s -> "id(" ^ s ^ ")"
   | STRING s -> s
   | EOF -> ""
