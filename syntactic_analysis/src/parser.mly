@@ -1,5 +1,4 @@
 %{
-exception SyntaxError of string
 %}
 
 %token WHILE
@@ -69,7 +68,7 @@ exception SyntaxError of string
 
 main:
 | exp EOF { Printf.fprintf stdout "( %s eof )" $1 }
-| error { raise (SyntaxError "invalid syntax") }
+| error { raise (Syntax.SyntaxError (let pos = Parsing.symbol_end_pos () in Printf.sprintf "invalid syntax in line %d at character %d" pos.pos_lnum (pos.pos_cnum - pos.pos_bol))) }
 
 decs:
 | dec decs { Printf.sprintf "( %s %s )" $1 $2 }
