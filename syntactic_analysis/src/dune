@@ -1,0 +1,6 @@
+(ocamlyacc parser)
+
+(library
+ (public_name syntactic_analysis)
+ (name syntactic_analysis)
+ (libraries lexcal_analysis))

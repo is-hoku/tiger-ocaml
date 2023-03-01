@@ -1,0 +1,5 @@
+(executable
+ (public_name syntactic_analysis)
+ (name parser)
+ (package syntactic_analysis)
+ (libraries lexcal_analysis syntactic_analysis))

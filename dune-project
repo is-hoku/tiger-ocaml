@@ -38,4 +38,10 @@
  (synopsis "Lexcal Analysis")
  (description "lexcal analyzer")
  (depends ocaml dune))
+
+(package
+ (name syntactic_analysis)
+ (synopsis "Syntactic Analysis")
+ (description "syntactic analyzer")
+ (depends ocaml dune))
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
