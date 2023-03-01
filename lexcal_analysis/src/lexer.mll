@@ -2,6 +2,7 @@
 open Lexing
 open Token
 
+exception ParseError of string
 exception SyntaxError of string
 }
 
@@ -14,7 +15,7 @@ rule read = parse
 | '\n' { new_line lexbuf; read lexbuf }
 | '"' { read_string (Buffer.create 16) lexbuf }
 | "/*" { read_comment 1 lexbuf }
-| "*/" { raise (SyntaxError ("Invalid character: " ^ lexeme lexbuf ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int (lexeme_start_p lexbuf).pos_bol)) }
+| "*/" { raise (SyntaxError ("Invalid character: " ^ lexeme lexbuf ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int ((lexeme_start_p lexbuf).pos_cnum - (lexeme_start_p lexbuf).pos_bol))) }
 | "while" { WHILE }
 | "for" { FOR }
 | "to" { TO }
@@ -57,7 +58,7 @@ rule read = parse
 | "," { COMMA }
 | int { INT (int_of_string (lexeme lexbuf)) }
 | id { ID (lexeme lexbuf) }
-| _ { raise (SyntaxError ("Unexpected character: " ^ lexeme lexbuf ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int (lexeme_start_p lexbuf).pos_bol)) }
+| _ { raise (ParseError ("Unexpected character: " ^ lexeme lexbuf ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int ((lexeme_start_p lexbuf).pos_bol - (lexeme_start_p lexbuf).pos_bol))) }
 | eof { EOF }
 
 and read_string buf = parse
@@ -70,8 +71,8 @@ and read_string buf = parse
 | '\\' ('0' ['6'-'9'] ['0'-'9'] | '1' (['0'-'1'] ['0'-'9'] | '2' ['0'-'6'])) as dec { Buffer.add_char buf (Char.chr (int_of_string (String.sub dec 1 3))); read_string buf lexbuf }
 | '\\' { read_ignored_string buf lexbuf }
 | [^ '"' '\\']+ { Buffer.add_string buf (lexeme lexbuf); read_string buf lexbuf }
-| _ { raise (SyntaxError ("Illegal character: " ^ lexeme lexbuf ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int (lexeme_start_p lexbuf).pos_bol)) }
-| eof { raise (SyntaxError ("Missing terminating \" character" ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int (lexeme_start_p lexbuf).pos_bol)) }
+| _ { raise (ParseError ("Illegal character: " ^ lexeme lexbuf ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int ((lexeme_start_p lexbuf).pos_bol - (lexeme_start_p lexbuf).pos_bol))) }
+| eof { raise (SyntaxError ("Missing terminating \" character" ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int ((lexeme_start_p lexbuf).pos_bol - (lexeme_start_p lexbuf).pos_bol))) }
 
 and read_caret buf = parse
 | '@' { Buffer.add_char buf '\000'; read_string buf lexbuf }
@@ -82,12 +83,12 @@ and read_caret buf = parse
 | 'K' { Buffer.add_char buf '\011'; read_string buf lexbuf }
 | 'L' { Buffer.add_char buf '\012'; read_string buf lexbuf }
 | 'M' { Buffer.add_char buf '\013'; read_string buf lexbuf }
-| _ { raise (SyntaxError ("Unexpected character as caret notation: " ^ lexeme lexbuf ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int (lexeme_start_p lexbuf).pos_bol)) }
+| _ { raise (ParseError ("Unexpected character as caret notation: " ^ lexeme lexbuf ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int ((lexeme_start_p lexbuf).pos_bol - (lexeme_start_p lexbuf).pos_bol))) }
 
 and read_ignored_string buf = parse
 | '\\' { read_string buf lexbuf }
 | ['\n' '\t' '\r' ' ']+ as s { Buffer.add_string buf s; read_ignored_string buf lexbuf }
-| _ { raise (SyntaxError ("Unexpected character in ignored characters: " ^ lexeme lexbuf ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int (lexeme_start_p lexbuf).pos_bol)) }
+| _ { raise (ParseError ("Unexpected character in ignored characters: " ^ lexeme lexbuf ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int ((lexeme_start_p lexbuf).pos_bol - (lexeme_start_p lexbuf).pos_bol))) }
 
 and read_comment opened = parse
 | "/*" { read_comment (opened+1) lexbuf }
@@ -96,4 +97,4 @@ and read_comment opened = parse
         | _ -> read_comment (opened-1) lexbuf
        }
 | _ { read_comment opened lexbuf }
-| eof { raise (SyntaxError ("Missing terminating */ character" ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int (lexeme_start_p lexbuf).pos_bol)) }
+| eof { raise (SyntaxError ("Missing terminating */ character" ^ ", line: " ^ string_of_int (lexeme_start_p lexbuf).pos_lnum ^ ", character: " ^ string_of_int ((lexeme_start_p lexbuf).pos_bol - (lexeme_start_p lexbuf).pos_bol))) }
