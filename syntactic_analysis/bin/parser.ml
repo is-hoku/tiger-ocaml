@@ -19,4 +19,4 @@ let () =
   try parse buf with
   | Lexer.ParseError e -> print_endline ("Error occurred in lexer: " ^ e)
   | Lexer.SyntaxError e -> print_endline ("Error occurred in lexer: " ^ e)
-  | Syntax.SyntaxError e -> print_endline ("Error occurred in parser: " ^ e)
+  | Parsing.Parse_error -> print_endline "Error occurred in parser: Parse error"

@@ -1,0 +1,13 @@
+/* define a recursive function */
+let type a := int in
+
+/* calculate n! */
+function nfactor(n: int): int =
+		if  } n = 0 
+			then 1
+			else 
+
+in
+	nfactor(10
+end
+
