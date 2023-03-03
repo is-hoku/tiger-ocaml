@@ -17,6 +17,12 @@ let () =
   let fin = open_in Sys.argv.(1) in
   let buf = Lexing.from_channel fin in
   try parse buf with
-  | Lexer.ParseError e -> print_endline ("Error occurred in lexer: " ^ e)
-  | Lexer.SyntaxError e -> print_endline ("Error occurred in lexer: " ^ e)
-  | Parsing.Parse_error -> print_endline "Error occurred in parser: Parse error"
+  | Lexer.ParseError e ->
+      print_endline ("Error occurred in lexer: " ^ e);
+      close_in fin
+  | Lexer.SyntaxError e ->
+      print_endline ("Error occurred in lexer: " ^ e);
+      close_in fin
+  | Parsing.Parse_error ->
+      print_endline "Error occurred in parser: Parse error";
+      close_in fin

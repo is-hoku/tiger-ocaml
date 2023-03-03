@@ -1,0 +1,1 @@
+let type id(arrtype) = array of id(int) var id(arr1) : id(arrtype) := id(arrtype) [ 10 ] of 0 in id(arr1) end
