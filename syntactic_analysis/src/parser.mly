@@ -64,14 +64,23 @@
 main:
 | exp EOF { Printf.fprintf stdout "( %s eof )" $1 }
 | error { let pos = Parsing.symbol_end_pos () in Printf.fprintf stdout "invalid syntax in line %d at character %d\n" pos.pos_lnum (pos.pos_cnum - pos.pos_bol) }
+
 decs:
-| dec decs { Printf.sprintf "( %s %s )" $1 $2 }
+| dec decs { Printf.sprintf "(%s%s )" $1 $2 }
 | { "" }
 
 dec:
-| tydec { Printf.sprintf "( %s )" $1 }
-| vardec { Printf.sprintf "( %s )" $1 }
-| fundec { Printf.sprintf "( %s )" $1 }
+| tydec tydecs { Printf.sprintf " ( %s%s )" $1 $2 }
+| vardec { Printf.sprintf " ( %s )" $1 }
+| fundec fundecs { Printf.sprintf " ( %s%s )" $1 $2 }
+
+tydecs:
+| tydec tydecs { Printf.sprintf " ( %s%s )" $1 $2 }
+| { "" }
+
+fundecs:
+| fundec fundecs { Printf.sprintf " ( %s%s )" $1 $2 }
+| { "" }
 
 tydec:
 | TYPE ID EQ ty { Printf.sprintf "( type id = %s )" $4 }

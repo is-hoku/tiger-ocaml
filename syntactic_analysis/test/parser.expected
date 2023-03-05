@@ -1,1 +1,1 @@
-( ( let ( ( ( type id = ( array of id ) ) ) ( ( ( var id : id := ( id [ ( int ) ] of ( int ) ) ) )  ) ) in ( ( ( id ) )  ) end ) eof )
+( ( let ( ( ( type id = ( array of id ) ) )( ( ( var id : id := ( id [ ( int ) ] of ( int ) ) ) ) ) ) in ( ( ( id ) )  ) end ) eof )
