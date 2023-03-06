@@ -1,0 +1,5 @@
+(executable
+ (public_name semantic_action)
+ (name parser)
+ (package semantic_action)
+ (libraries lexcal_analysis semantic_action))

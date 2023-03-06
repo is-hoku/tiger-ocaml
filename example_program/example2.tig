@@ -1,0 +1,2 @@
+/* example program on page 90 */
+(a := 5; a+1)

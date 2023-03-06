@@ -44,4 +44,10 @@
  (synopsis "Syntactic Analysis")
  (description "syntactic analyzer")
  (depends ocaml dune))
+
+(package
+ (name semantic_action)
+ (synopsis "Semantic Action")
+ (description "syntactic analyzer with semantic action")
+ (depends ocaml dune))
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
