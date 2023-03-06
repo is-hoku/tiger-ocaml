@@ -1,6 +1,3 @@
-%{
-open Syntax
-%}
 %token WHILE
 %token FOR
 %token TO
