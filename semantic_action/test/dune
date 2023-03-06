@@ -1,2 +1,4 @@
 (test
- (name semantic_action))
+ (name parser)
+ (deps (glob_files ../../example_program/*))
+ (libraries lexcal_analysis semantic_action))
