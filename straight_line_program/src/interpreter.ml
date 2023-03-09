@@ -33,7 +33,7 @@ and maxargs_exp e =
   | OpExp (e1, _, e2) -> max (maxargs_exp e1, maxargs_exp e2)
   | EseqExp (s1, e1) -> max (maxargs s1, maxargs_exp e1)
 
-let calcurate (a, op, b) =
+let calculate (a, op, b) =
   match op with Plus -> a + b | Minus -> a - b | Times -> a * b | Div -> a / b
 
 let rec print_table t =
@@ -70,7 +70,7 @@ and interpExp (e, t) =
   | OpExp (e1, op, e2) ->
       let v1, t1 = interpExp (e1, t) in
       let v2, t2 = interpExp (e2, t1) in
-      (calcurate (v1, op, v2), t2)
+      (calculate (v1, op, v2), t2)
   | EseqExp (s1, e1) ->
       let t1 = interpStm (s1, t) in
       interpExp (e1, t1)
