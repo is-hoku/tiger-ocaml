@@ -88,9 +88,8 @@ let rec string_of_var t =
       Printf.sprintf "SubscriptVar(%s, %s, %s)" (string_of_var v)
         (string_of_exp e) (string_of_pos p)
 
-and string_of_exp_pos t =
-  match t with
-  | e, p -> Printf.sprintf "(%s, %s)" (string_of_exp e) (string_of_pos p)
+and string_of_exp_pos (e, p) =
+  Printf.sprintf "(%s, %s)" (string_of_exp e) (string_of_pos p)
 
 and string_of_exp_option e =
   match e with None -> "None" | Some a -> string_of_exp a
@@ -192,11 +191,9 @@ and string_of_oper t =
   | GtOp -> "(>)"
   | GeOp -> "(>=)"
 
-and string_of_symbol_exp_pos t =
-  match t with
-  | s, e, p ->
-      Printf.sprintf "(%s, %s, %s)" (string_of_symbol s) (string_of_exp e)
-        (string_of_pos p)
+and string_of_symbol_exp_pos (s, e, p) =
+  Printf.sprintf "(%s, %s, %s)" (string_of_symbol s) (string_of_exp e)
+    (string_of_pos p)
 
 and string_of_field t =
   Printf.sprintf "{name=%s, escape=%s, typ=%s, pos=%s}"
