@@ -74,7 +74,7 @@ and typedec = { tname : symbol; ty : ty; tpos : pos }
 let string_of_symbol s =
   match s with Sym t -> Symbol.name t | ErrorSym -> "error"
 
-let string_of_pos (p : Lexing.position) =
+let string_of_pos (p : pos) =
   Printf.sprintf "(%d, %d)" p.pos_lnum (p.pos_cnum - p.pos_bol)
 
 let rec string_of_var t =

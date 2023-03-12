@@ -12,3 +12,4 @@ let from_string (name : string) =
     (name, !index)
 
 let name = fst
+let compare (_, a) (_, b) = Stdlib.compare a b
