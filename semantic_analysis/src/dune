@@ -1,4 +1,4 @@
 (library
  (public_name semantic_analysis)
  (name semantic_analysis)
- (libraries lexcal_analysis semantic_action))
+ (libraries lexical_analysis semantic_action))
