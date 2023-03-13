@@ -10,9 +10,9 @@ let print_token ch =
 let () =
   let fin = open_in "../../example_program/test1.tig" in
   try print_token fin with
-  | Lexer.ParseError e ->
+  | Lexer.Parse_error e ->
       print_endline ("Error occurred in lexer: " ^ e);
       close_in fin
-  | Lexer.SyntaxError e ->
+  | Lexer.Syntax_error e ->
       print_endline ("Error occurred in lexer: " ^ e);
       close_in fin

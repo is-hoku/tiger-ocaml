@@ -71,14 +71,12 @@ and fundec = {
 
 and typedec = { tname : symbol; ty : ty; tpos : pos }
 
-let string_of_symbol s =
-  match s with Sym t -> Symbol.name t | ErrorSym -> "error"
+let string_of_symbol = function Sym t -> Symbol.name t | ErrorSym -> "error"
 
 let string_of_pos (p : pos) =
   Printf.sprintf "(%d, %d)" p.pos_lnum (p.pos_cnum - p.pos_bol)
 
-let rec string_of_var t =
-  match t with
+let rec string_of_var = function
   | SimpleVar (s, p) ->
       Printf.sprintf "SimpleVar(%s, %s)" (string_of_symbol s) (string_of_pos p)
   | FieldVar (v, s, p) ->
@@ -91,17 +89,14 @@ let rec string_of_var t =
 and string_of_exp_pos (e, p) =
   Printf.sprintf "(%s, %s)" (string_of_exp e) (string_of_pos p)
 
-and string_of_exp_option e =
-  match e with None -> "None" | Some a -> string_of_exp a
+and string_of_exp_option = function None -> "None" | Some a -> string_of_exp a
 
-and string_of_symbol_pos_option sp =
-  match sp with
+and string_of_symbol_pos_option = function
   | None -> "None"
   | Some (s, p) ->
       Printf.sprintf "(%s, %s)" (string_of_symbol s) (string_of_pos p)
 
-and string_of_exp t =
-  match t with
+and string_of_exp = function
   | VarExp e -> Printf.sprintf "VarExp(%s)" (string_of_var e)
   | NilExp -> "nil"
   | IntExp e -> "IntExp " ^ string_of_int e
@@ -153,8 +148,7 @@ and string_of_exp t =
         (string_of_pos e.pos)
   | ErrorExp p -> Printf.sprintf "ErrorExp(%s)" (string_of_pos p)
 
-and string_of_ty t =
-  match t with
+and string_of_ty = function
   | NameTy (s, p) ->
       Printf.sprintf "NameTy(%s, %s)" (string_of_symbol s) (string_of_pos p)
   | RecordTy r ->
@@ -163,8 +157,7 @@ and string_of_ty t =
   | ArrayTy (s, p) ->
       Printf.sprintf "ArrayTy(%s, %s)" (string_of_symbol s) (string_of_pos p)
 
-and string_of_dec t =
-  match t with
+and string_of_dec = function
   | FunctionDec d ->
       Printf.sprintf "FunctionDec[%s]"
         (String.concat ", " (List.map string_of_fundec d))
@@ -178,8 +171,7 @@ and string_of_dec t =
       Printf.sprintf "TypeDec[%s]"
         (String.concat ", " (List.map string_of_typedec d))
 
-and string_of_oper t =
-  match t with
+and string_of_oper = function
   | PlusOp -> "(+)"
   | MinusOp -> "(-)"
   | TimesOp -> "(*)"

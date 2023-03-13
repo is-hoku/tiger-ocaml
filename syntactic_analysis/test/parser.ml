@@ -10,6 +10,6 @@ let () =
   let fin = open_in "../../example_program/test1.tig" in
   let buf = Lexing.from_channel fin in
   try parse buf with
-  | Lexer.ParseError e -> print_endline ("Error occurred in lexer: " ^ e)
-  | Lexer.SyntaxError e -> print_endline ("Error occurred in lexer: " ^ e)
+  | Lexer.Parse_error e -> print_endline ("Error occurred in lexer: " ^ e)
+  | Lexer.Syntax_error e -> print_endline ("Error occurred in lexer: " ^ e)
   | Parsing.Parse_error -> print_endline "Error occurred in parser: Parse error"

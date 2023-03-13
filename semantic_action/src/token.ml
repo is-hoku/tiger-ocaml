@@ -1,7 +1,6 @@
 open Lexcal_analysis.Token
 
-let parsertoken_of_tokent t =
-  match t with
+let parsertoken_of_tokent = function
   | WHILE -> Parser.WHILE
   | FOR -> Parser.FOR
   | TO -> Parser.TO
@@ -47,8 +46,7 @@ let parsertoken_of_tokent t =
   | STRING s -> Parser.STRING s
   | EOF -> Parser.EOF
 
-let to_string t =
-  match t with
+let to_string = function
   | Parser.WHILE -> "while"
   | Parser.FOR -> "for"
   | Parser.TO -> "to"

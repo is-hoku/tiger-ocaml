@@ -44,8 +44,7 @@ type t =
   | STRING of string
   | EOF
 
-let to_string t =
-  match t with
+let to_string = function
   | WHILE -> "while"
   | FOR -> "for"
   | TO -> "to"
