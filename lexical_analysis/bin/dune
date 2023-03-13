@@ -1,0 +1,5 @@
+(executable
+ (public_name lexical_analysis)
+ (name lexer)
+ (package lexical_analysis)
+ (libraries lexical_analysis))

@@ -29,7 +29,7 @@ and exp =
   | BreakExp of pos
   | LetExp of { decs : dec list; body : exp; pos : pos }
   | ArrayExp of { typ : symbol; size : exp; init : exp; pos : pos }
-  | ErrorExp of pos
+  | ErrorExp
 
 and ty =
   | NameTy of symbol * pos

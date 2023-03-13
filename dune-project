@@ -34,9 +34,9 @@
  (depends ocaml dune))
 
 (package
- (name lexcal_analysis)
- (synopsis "Lexcal Analysis")
- (description "lexcal analyzer")
+ (name lexical_analysis)
+ (synopsis "Lexical Analysis")
+ (description "lexical analyzer")
  (depends ocaml dune))
 
 (package

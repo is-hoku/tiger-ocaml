@@ -29,7 +29,7 @@ and exp =
   | BreakExp of pos
   | LetExp of { decs : dec list; body : exp; pos : pos }
   | ArrayExp of { typ : symbol; size : exp; init : exp; pos : pos }
-  | ErrorExp of pos
+  | ErrorExp
 
 and ty =
   | NameTy of symbol * pos
@@ -71,7 +71,9 @@ and fundec = {
 
 and typedec = { tname : symbol; ty : ty; tpos : pos }
 
-let string_of_symbol = function Sym t -> Symbol.name t | ErrorSym -> "error"
+let string_of_symbol = function
+  | Sym t -> Symbol.name t
+  | ErrorSym -> Printf.sprintf "error"
 
 let string_of_pos (p : pos) =
   Printf.sprintf "(%d, %d)" p.pos_lnum (p.pos_cnum - p.pos_bol)
@@ -146,7 +148,7 @@ and string_of_exp = function
       Printf.sprintf "ArrayExp{typ=%s, size=%s, init=%s, pos=%s}"
         (string_of_symbol e.typ) (string_of_exp e.size) (string_of_exp e.init)
         (string_of_pos e.pos)
-  | ErrorExp p -> Printf.sprintf "ErrorExp(%s)" (string_of_pos p)
+  | ErrorExp -> "ErrorExp"
 
 and string_of_ty = function
   | NameTy (s, p) ->

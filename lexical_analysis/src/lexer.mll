@@ -2,7 +2,6 @@
 open Lexing
 open Token
 
-exception Parse_error of string
 exception Syntax_error of string
 }
 
@@ -58,7 +57,7 @@ rule read = parse
 | "," { COMMA }
 | int { INT (int_of_string (lexeme lexbuf)) }
 | id { ID (lexeme lexbuf) }
-| _ { raise (Parse_error (let pos = lexeme_start_p lexbuf in Printf.sprintf "unexpected character %s in line %d at character %d" (lexeme lexbuf) pos.pos_lnum (pos.pos_cnum - pos.pos_bol))) }
+| _ { raise (Syntax_error (let pos = lexeme_start_p lexbuf in Printf.sprintf "unexpected character %s in line %d at character %d" (lexeme lexbuf) pos.pos_lnum (pos.pos_cnum - pos.pos_bol))) }
 | eof { EOF }
 
 and read_string buf = parse
@@ -71,7 +70,7 @@ and read_string buf = parse
 | '\\' ('0' ['6'-'9'] ['0'-'9'] | '1' (['0'-'1'] ['0'-'9'] | '2' ['0'-'6'])) as dec { Buffer.add_char buf (Char.chr (int_of_string (String.sub dec 1 3))); read_string buf lexbuf }
 | '\\' { read_ignored_string buf lexbuf }
 | [^ '"' '\\']+ { Buffer.add_string buf (lexeme lexbuf); read_string buf lexbuf }
-| _ { raise (Parse_error (let pos = lexeme_start_p lexbuf in Printf.sprintf "invalid character %s in line %d at character %d" (lexeme lexbuf) pos.pos_lnum (pos.pos_cnum - pos.pos_bol))) }
+| _ { raise (Syntax_error (let pos = lexeme_start_p lexbuf in Printf.sprintf "invalid character %s in line %d at character %d" (lexeme lexbuf) pos.pos_lnum (pos.pos_cnum - pos.pos_bol))) }
 | eof { raise (Syntax_error (let pos = lexeme_start_p lexbuf in Printf.sprintf "missing terminating \" character in line %d at character %d" pos.pos_lnum (pos.pos_cnum - pos.pos_bol))) }
 
 and read_caret buf = parse
@@ -83,12 +82,12 @@ and read_caret buf = parse
 | 'K' { Buffer.add_char buf '\011'; read_string buf lexbuf }
 | 'L' { Buffer.add_char buf '\012'; read_string buf lexbuf }
 | 'M' { Buffer.add_char buf '\013'; read_string buf lexbuf }
-| _ { raise (Parse_error (let pos = lexeme_start_p lexbuf in Printf.sprintf "unexpected character as caret notation %s in line %d at character %d" (lexeme lexbuf) pos.pos_lnum (pos.pos_cnum - pos.pos_bol))) }
+| _ { raise (Syntax_error (let pos = lexeme_start_p lexbuf in Printf.sprintf "unexpected character as caret notation %s in line %d at character %d" (lexeme lexbuf) pos.pos_lnum (pos.pos_cnum - pos.pos_bol))) }
 
 and read_ignored_string buf = parse
 | '\\' { read_string buf lexbuf }
 | ['\n' '\t' '\r' ' ']+ as s { Buffer.add_string buf s; read_ignored_string buf lexbuf }
-| _ { raise (Parse_error (let pos = lexeme_start_p lexbuf in Printf.sprintf "unexpected character in ignored characters %s in line %d at character %d" (lexeme lexbuf) pos.pos_lnum (pos.pos_cnum - pos.pos_bol))) }
+| _ { raise (Syntax_error (let pos = lexeme_start_p lexbuf in Printf.sprintf "unexpected character in ignored characters %s in line %d at character %d" (lexeme lexbuf) pos.pos_lnum (pos.pos_cnum - pos.pos_bol))) }
 
 and read_comment opened = parse
 | "/*" { read_comment (opened+1) lexbuf }

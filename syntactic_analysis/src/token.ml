@@ -1,4 +1,4 @@
-open Lexcal_analysis.Token
+open Lexical_analysis.Token
 
 let parsertoken_of_tokent t =
   match t with

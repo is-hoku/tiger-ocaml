@@ -1,4 +1,4 @@
-open Lexcal_analysis
+open Lexical_analysis
 
 let rec tokenize buf =
   match Lexer.read buf with Token.EOF -> [] | t -> t :: tokenize buf
@@ -9,10 +9,7 @@ let print_token ch =
 
 let () =
   let fin = open_in "../../example_program/test1.tig" in
-  try print_token fin with
-  | Lexer.Parse_error e ->
-      print_endline ("Error occurred in lexer: " ^ e);
-      close_in fin
-  | Lexer.Syntax_error e ->
-      print_endline ("Error occurred in lexer: " ^ e);
-      close_in fin
+  try print_token fin
+  with Lexer.Syntax_error e ->
+    print_endline ("SyntaxError: " ^ e);
+    close_in fin

@@ -1,5 +1,0 @@
-(ocamllex lexer)
-
-(library
- (public_name lexcal_analysis)
- (name lexcal_analysis))

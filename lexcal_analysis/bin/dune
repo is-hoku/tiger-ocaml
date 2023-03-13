@@ -1,5 +1,0 @@
-(executable
- (public_name lexcal_analysis)
- (name lexer)
- (package lexcal_analysis)
- (libraries lexcal_analysis))

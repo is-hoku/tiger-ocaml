@@ -3,4 +3,4 @@
 (library
  (public_name syntactic_analysis)
  (name syntactic_analysis)
- (libraries lexcal_analysis))
+ (libraries lexical_analysis))

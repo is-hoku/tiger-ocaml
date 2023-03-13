@@ -1,5 +1,5 @@
-open Lexcal_analysis
-module Lexer_token = Lexcal_analysis.Token
+open Lexical_analysis
+module Lexer_token = Lexical_analysis.Token
 open Syntactic_analysis
 module Parser_token = Syntactic_analysis.Token
 
@@ -10,6 +10,9 @@ let () =
   let fin = open_in "../../example_program/test1.tig" in
   let buf = Lexing.from_channel fin in
   try parse buf with
-  | Lexer.Parse_error e -> print_endline ("Error occurred in lexer: " ^ e)
-  | Lexer.Syntax_error e -> print_endline ("Error occurred in lexer: " ^ e)
-  | Parsing.Parse_error -> print_endline "Error occurred in parser: Parse error"
+  | Lexer.Syntax_error e ->
+      print_endline ("SyntaxError: " ^ e);
+      close_in fin
+  | Parsing.Parse_error ->
+      print_endline "Parse error";
+      close_in fin

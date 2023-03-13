@@ -1,4 +1,4 @@
 (test
  (name lexer)
  (deps (glob_files ../../example_program/*))
- (libraries lexcal_analysis))
+ (libraries lexical_analysis))
