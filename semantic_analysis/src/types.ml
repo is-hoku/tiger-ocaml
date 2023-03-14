@@ -3,11 +3,6 @@ open Error
 
 type unique = unit ref
 
-type error_ty =
-  | Syntax_error (* Syntax Error is already output by the parser *)
-  | Type_error of string
-  | Name_error of string
-
 type ty =
   | Record of (Symbol.t * ty) list * unique
   | Nil
@@ -16,7 +11,7 @@ type ty =
   | Array of ty * unique
   | Name of Symbol.t * ty option ref
   | Unit
-  | Error of error_ty
+  | Error
 
 let rec string_of_ty = function
   | Record (fields, _) ->
@@ -35,7 +30,7 @@ let rec string_of_ty = function
           Printf.sprintf "name of %s(%s)" (Symbol.name s) (string_of_ty typ)
       | None -> "name of %s(?)")
   | Unit -> "()"
-  | Error _ -> "Error"
+  | Error -> "error"
 
 let rec actual_ty t (pos : Lexing.position) =
   match t with
@@ -55,4 +50,18 @@ let rec actual_ty t (pos : Lexing.position) =
                   (Symbol.name s) pos.pos_lnum
                   (pos.pos_cnum - pos.pos_bol))))
   | Unit -> Unit
-  | Error s -> Error s
+  | Error -> Error
+
+let rec check expected actual =
+  match (expected, actual) with
+  | Record (_, u1), Record (_, u2) -> u1 == u2
+  | Nil, Nil -> true
+  | Int, Int -> true
+  | String, String -> true
+  | Array (_, u1), Array (_, u2) -> u1 == u2
+  | Name (_, ty), other | other, Name (_, ty) -> (
+      match !ty with None -> false | Some t -> check t other)
+  | Unit, Unit -> true
+  | Error, _ -> true
+  | _, Error -> true
+  | _ -> false
