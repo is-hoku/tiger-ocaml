@@ -71,17 +71,7 @@ and fundec = {
 
 and typedec = { tname : symbol; ty : ty; tpos : pos }
 
-val string_of_symbol : symbol -> string
-val string_of_pos : pos -> string
-val string_of_var : var -> string
-val string_of_exp_pos : exp * pos -> string
-val string_of_exp_option : exp option -> string
-val string_of_symbol_pos_option : (symbol * pos) option -> string
 val string_of_exp : exp -> string
-val string_of_ty : ty -> string
-val string_of_dec : dec -> string
-val string_of_oper : oper -> string
-val string_of_symbol_exp_pos : symbol * exp * pos -> string
-val string_of_field : field -> string
-val string_of_fundec : fundec -> string
-val string_of_typedec : typedec -> string
+val string_of_var : var -> string
+val string_of_exp_raw : exp -> string
+val string_of_var_raw : var -> string

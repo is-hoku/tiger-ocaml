@@ -206,3 +206,109 @@ and string_of_fundec t =
 and string_of_typedec t =
   Printf.sprintf "{name=%s, ty=%s, pos=%s}" (string_of_symbol t.tname)
     (string_of_ty t.ty) (string_of_pos t.tpos)
+
+(* string_of_{type-name}_raw functions return a string as it appears on the source code *)
+let string_of_symbol_raw = function
+  | Sym t -> Symbol.name t
+  | ErrorSym -> Printf.sprintf "error"
+
+let rec string_of_var_raw = function
+  | SimpleVar (s, _) -> string_of_symbol_raw s
+  | FieldVar (v, s, _) ->
+      Printf.sprintf "%s.%s" (string_of_var_raw v) (string_of_symbol_raw s)
+  | SubscriptVar (v, e, _) ->
+      Printf.sprintf "%s[%s]" (string_of_var_raw v) (string_of_exp_raw e)
+
+and string_of_record_field_raw (s, e, _) =
+  Printf.sprintf "%s = %s" (string_of_symbol_raw s) (string_of_exp_raw e)
+
+and string_of_else_exp_raw = function
+  | None -> ""
+  | Some a -> "else " ^ string_of_exp_raw a
+
+and string_of_option_type_raw = function
+  | None -> ""
+  | Some (s, _) -> Printf.sprintf ": %s " (string_of_symbol_raw s)
+
+and string_of_exp_raw = function
+  | VarExp e -> string_of_var_raw e
+  | NilExp -> "nil"
+  | IntExp e -> string_of_int e
+  | StringExp (s, _) -> s
+  | CallExp { func; args; _ } ->
+      Printf.sprintf "%s(%s)"
+        (string_of_symbol_raw func)
+        (String.concat ", " (List.map string_of_exp_raw args))
+  | OpExp { left; oper; right; _ } ->
+      Printf.sprintf "%s %s %s" (string_of_exp_raw left)
+        (string_of_oper_raw oper) (string_of_exp_raw right)
+  | RecordExp { fields; typ; _ } ->
+      Printf.sprintf "%s{%s}" (string_of_symbol_raw typ)
+        (String.concat ", " (List.map string_of_record_field_raw fields))
+  | SeqExp e -> String.concat "; " (List.map string_of_exp_raw (List.map fst e))
+  | AssignExp { var; exp; _ } ->
+      Printf.sprintf "%s := %s" (string_of_var_raw var) (string_of_exp_raw exp)
+  | IfExp { test; then'; else'; _ } ->
+      Printf.sprintf "if %s then %s %s" (string_of_exp_raw test)
+        (string_of_exp_raw then')
+        (string_of_else_exp_raw else')
+  | WhileExp { test; body; _ } ->
+      Printf.sprintf "white %s do %s" (string_of_exp_raw test)
+        (string_of_exp_raw body)
+  | ForExp { var; escape = _; lo; hi; body; _ } ->
+      Printf.sprintf "for %s := %s to %s do %s" (string_of_symbol_raw var)
+        (string_of_exp_raw lo) (string_of_exp_raw hi) (string_of_exp_raw body)
+  | BreakExp _ -> "break"
+  | LetExp { decs; body; _ } ->
+      Printf.sprintf "let %s in %s end"
+        (String.concat " " (List.map string_of_dec_raw decs))
+        (string_of_exp_raw body)
+  | ArrayExp { typ; size; init; _ } ->
+      Printf.sprintf "%s [%s] of %s" (string_of_symbol_raw typ)
+        (string_of_exp_raw size) (string_of_exp_raw init)
+  | ErrorExp -> "error"
+
+and string_of_ty_raw = function
+  | NameTy (s, _) -> string_of_symbol_raw s
+  | RecordTy r ->
+      Printf.sprintf "{%s}"
+        (String.concat "; " (List.map string_of_field_raw r))
+  | ArrayTy (s, _) -> Printf.sprintf "array of %s" (string_of_symbol s)
+
+and string_of_dec_raw = function
+  | FunctionDec d -> String.concat " " (List.map string_of_fundec_raw d)
+  | VarDec { name; escape = _; typ; init; _ } ->
+      Printf.sprintf "var %s %s:= %s"
+        (string_of_symbol_raw name)
+        (string_of_option_type_raw typ)
+        (string_of_exp_raw init)
+  | TypeDec d -> String.concat " " (List.map string_of_typedec_raw d)
+
+and string_of_oper_raw = function
+  | PlusOp -> "+"
+  | MinusOp -> "-"
+  | TimesOp -> "*"
+  | DivideOp -> "/"
+  | EqOp -> "="
+  | NeqOp -> "!="
+  | LtOp -> "<"
+  | LeOp -> "<="
+  | GtOp -> ">"
+  | GeOp -> ">="
+
+and string_of_field_raw { name; escape = _; typ; _ } =
+  Printf.sprintf "%s : %s"
+    (string_of_symbol_raw name)
+    (string_of_symbol_raw typ)
+
+and string_of_fundec_raw { fname; params; result; body; _ } =
+  Printf.sprintf "function %s (%s) %s= %s"
+    (string_of_symbol_raw fname)
+    (String.concat ", " (List.map string_of_field_raw params))
+    (string_of_option_type_raw result)
+    (string_of_exp_raw body)
+
+and string_of_typedec_raw { tname; ty; _ } =
+  Printf.sprintf "type %s = %s"
+    (string_of_symbol_raw tname)
+    (string_of_ty_raw ty)

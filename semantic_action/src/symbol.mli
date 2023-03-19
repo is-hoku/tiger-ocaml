@@ -2,4 +2,5 @@ type t = string * int
 
 val from_string : string -> t
 val name : t -> string
-val compare : 'a * 'b -> 'c * 'b -> int
+val compare : 'a * int -> 'b * int -> int
+val dummy : string * int

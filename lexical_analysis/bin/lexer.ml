@@ -9,7 +9,9 @@ let print_token ch =
 
 let () =
   let fin = open_in Sys.argv.(1) in
-  try print_token fin
+  try
+    print_token fin;
+    close_in fin
   with Lexer.Syntax_error e ->
     print_endline ("SyntaxError: " ^ e);
     close_in fin

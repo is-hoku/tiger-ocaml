@@ -16,7 +16,10 @@ let parse buf = Parser.main tokenize buf
 let () =
   let fin = open_in Sys.argv.(1) in
   let buf = Lexing.from_channel fin in
-  try parse buf with
+  try
+    parse buf;
+    close_in fin
+  with
   | Lexer.Syntax_error e ->
       print_endline ("SyntaxError: " ^ e);
       close_in fin

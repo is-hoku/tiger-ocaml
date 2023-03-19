@@ -15,3 +15,4 @@ type ty =
 val string_of_ty : ty -> string
 val actual_ty : ty -> Lexing.position -> ty
 val check : ty -> ty -> bool
+val check_record_nil : ty -> ty -> bool

@@ -1,2 +1,4 @@
-exception Type_error of string
-exception Name_error of string
+exception Type_error
+exception Name_error
+
+val print_error : exn -> string -> Lexing.position -> unit

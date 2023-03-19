@@ -1,8 +1,9 @@
 type t = string * int
 
+let index = ref (-1)
+let hashtable = Hashtbl.create 128
+
 let from_string (name : string) =
-  let hashtable = Hashtbl.create 128 in
-  let index = ref (-1) in
   try
     let i = Hashtbl.find hashtable name in
     (name, i)
@@ -12,4 +13,5 @@ let from_string (name : string) =
     (name, !index)
 
 let name = fst
-let compare (_, a) (_, b) = Stdlib.compare a b
+let compare (_, a) (_, b) = Int.compare a b
+let dummy = ("", 0)

@@ -16,7 +16,10 @@ let print_ast ast = print_string (Syntax.string_of_exp ast)
 let () =
   let fin = open_in Sys.argv.(1) in
   let buf = Lexing.from_channel fin in
-  try print_ast (parse buf) with
+  try
+    print_ast (parse buf);
+    close_in fin
+  with
   | Lexer.Syntax_error e ->
       print_endline ("SyntaxError: " ^ e);
       close_in fin
