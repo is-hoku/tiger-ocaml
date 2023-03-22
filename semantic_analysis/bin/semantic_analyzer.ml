@@ -16,7 +16,7 @@ let () =
   try
     let ast = parse buf in
     let expty = semant Env.base_venv Env.base_tenv false ast in
-    print_endline (Types.string_of_ty expty.ty);
+    print_string (Types.string_of_ty expty.ty);
     close_in fin
   with
   | Lexer.Syntax_error e ->
@@ -25,3 +25,5 @@ let () =
   | Parsing.Parse_error ->
       print_endline "SyntaxError";
       close_in fin
+  | Error.Type_error -> close_in fin
+  | Error.Name_error -> close_in fin

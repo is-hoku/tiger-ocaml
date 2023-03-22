@@ -21,8 +21,8 @@ let rec trans_exp (venv, tenv, inside_loop, exp) =
   | CallExp { func; args; pos } ->
       let ty = check_call venv tenv inside_loop func args pos in
       { exp = (); ty }
-  | OpExp { left; oper = _; right; pos } ->
-      let ty = check_op venv tenv inside_loop left right pos in
+  | OpExp { left; oper; right; pos } ->
+      let ty = check_op venv tenv inside_loop left oper right pos in
       { exp = (); ty }
   | RecordExp { fields; typ; pos } ->
       let ty = check_record venv tenv inside_loop fields typ pos in
@@ -177,38 +177,75 @@ and check_call venv tenv inside_loop func args pos =
           pos;
         Types.Error)
 
-and check_op venv tenv inside_loop left right pos =
+and check_op venv tenv inside_loop left oper right pos =
   let { exp = _; ty = left_type } = trans_exp (venv, tenv, inside_loop, left) in
   let { exp = _; ty = right_type } =
     trans_exp (venv, tenv, inside_loop, right)
   in
-  match (left_type, right_type) with
-  | Types.Error, _ | _, Types.Error -> Types.Error
-  | Types.Int, Types.Int -> Types.Int
-  | Types.Int, other ->
-      print_error Type_error
-        (Printf.sprintf "expression %s has type %s but expected type int"
-           (string_of_exp_raw right) (Types.string_of_ty other))
-        pos;
-      Types.Error
-  | other, Types.Int ->
-      print_error Type_error
-        (Printf.sprintf "expression %s has type %s but expected type int"
-           (string_of_exp_raw left) (Types.string_of_ty other))
-        pos;
-      Types.Error
-  | other1, other2 ->
-      print_error Type_error
-        (Printf.sprintf "expression %s has type %s but expected type int"
-           (string_of_exp_raw left)
-           (Types.string_of_ty other1))
-        pos;
-      print_error Type_error
-        (Printf.sprintf "expression %s has type %s but expected type int"
-           (string_of_exp_raw right)
-           (Types.string_of_ty other2))
-        pos;
-      Types.Error
+  match oper with
+  | PlusOp | MinusOp | TimesOp | DivideOp -> (
+      match (left_type, right_type) with
+      | Types.Error, _ | _, Types.Error -> Types.Error
+      | Types.Int, Types.Int -> Types.Int
+      | Types.Int, other ->
+          print_error Type_error
+            (Printf.sprintf "expression %s has type %s but expected type int"
+               (string_of_exp_raw right) (Types.string_of_ty other))
+            pos;
+          Types.Error
+      | other, Types.Int ->
+          print_error Type_error
+            (Printf.sprintf "expression %s has type %s but expected type int"
+               (string_of_exp_raw left) (Types.string_of_ty other))
+            pos;
+          Types.Error
+      | other1, other2 ->
+          print_error Type_error
+            (Printf.sprintf "expression %s has type %s but expected type int"
+               (string_of_exp_raw left)
+               (Types.string_of_ty other1))
+            pos;
+          print_error Type_error
+            (Printf.sprintf "expression %s has type %s but expected type int"
+               (string_of_exp_raw right)
+               (Types.string_of_ty other2))
+            pos;
+          Types.Error)
+  | EqOp | NeqOp | LtOp | LeOp | GtOp | GeOp -> (
+      match (left_type, right_type) with
+      | Types.Error, _ | _, Types.Error -> Types.Error
+      | Types.Int, Types.Int -> Types.Int
+      | Types.String, Types.String -> Types.Int
+      | Types.Record (_, _), Types.Nil | Types.Nil, Types.Record (_, _) ->
+          Types.Int
+      | (Types.Int as typ), other | (Types.String as typ), other ->
+          print_error Type_error
+            (Printf.sprintf "expression %s has type %s but expected type %s"
+               (string_of_exp_raw right) (Types.string_of_ty other)
+               (Types.string_of_ty typ))
+            pos;
+          Types.Error
+      | other, (Types.Int as typ) | other, (Types.String as typ) ->
+          print_error Type_error
+            (Printf.sprintf "expression %s has type %s but expected type %s"
+               (string_of_exp_raw left) (Types.string_of_ty other)
+               (Types.string_of_ty typ))
+            pos;
+          Types.Error
+      | other1, other2 ->
+          print_error Type_error
+            (Printf.sprintf
+               "expression %s has type %s but expected type int or string"
+               (string_of_exp_raw left)
+               (Types.string_of_ty other1))
+            pos;
+          print_error Type_error
+            (Printf.sprintf
+               "expression %s has type %s but expected type int or string"
+               (string_of_exp_raw right)
+               (Types.string_of_ty other2))
+            pos;
+          Types.Error)
 
 and check_record venv tenv inside_loop fields typ pos =
   match find_type tenv typ pos with
@@ -320,7 +357,7 @@ and check_if venv tenv inside_loop test then' else' pos =
         let { exp = _; ty = else_ty } =
           trans_exp (venv, tenv, inside_loop, else_exp)
         in
-        if not (Types.check then_ty else_ty) then (
+        if not (Types.check_record_nil then_ty else_ty) then (
           print_error Type_error
             (Printf.sprintf "expression %s and %s has different types %s and %s"
                (string_of_exp_raw then')
@@ -502,6 +539,19 @@ and find_type tenv typ pos =
           pos;
         Types.Error)
 
+and find_rec_type tenv typ pos =
+  match typ with
+  | Syntax.ErrorSym -> Types.Error
+  | Syntax.Sym t -> (
+      try
+        let ty = Symbol_table.look t tenv in
+        Types.actual_rec_ty ty pos
+      with Not_found ->
+        print_error Name_error
+          (Printf.sprintf "type %s is not declared" (Symbol.name t))
+          pos;
+        Types.Error)
+
 and trans_fun_header { venv; tenv }
     { fname; params; result; body = _; fpos = _ } =
   let param_types =
@@ -552,7 +602,7 @@ and trans_fun_dec venv tenv inside_loop f =
       match fname with
       | Syntax.ErrorSym -> ()
       | Syntax.Sym name ->
-          if not (Types.check body_ty result_ty) then
+          if not (Types.check_record_nil body_ty result_ty) then
             print_error Type_error
               (Printf.sprintf "function %s return type %s but expected type %s"
                  (Symbol.name name)
@@ -571,41 +621,45 @@ and trans_type_header { venv; tenv } { tname; ty = _; tpos = _ } =
       in
       { venv; tenv = new_tenv }
 
+and trans_type_body tenv { tname; ty; tpos } =
+  match tname with
+  | Syntax.ErrorSym -> ()
+  | Syntax.Sym type_name -> (
+      try
+        let t = Symbol_table.look type_name tenv in
+        match t with
+        | Types.Name (sym, typ) -> (
+            match !typ with
+            | None ->
+                typ :=
+                  Some
+                    (let new_ty = trans_ty (tenv, ty) in
+                     new_ty)
+            | Some _ ->
+                print_error Name_error
+                  (Printf.sprintf "type %s is already declared"
+                     (Symbol.name sym))
+                  tpos)
+        | _ ->
+            print_error Name_error
+              (Printf.sprintf "type %s is already declared"
+                 (Symbol.name type_name))
+              tpos
+      with Not_found ->
+        print_error Name_error
+          (Printf.sprintf "type %s is not declared" (Symbol.name type_name))
+          tpos)
+
 and trans_type_dec venv tenv t =
   let { venv = _; tenv = new_tenv } =
     List.fold_left trans_type_header { venv; tenv } t
   in
-  List.iter
-    (fun { tname; ty; tpos } ->
-      match tname with
-      | Syntax.ErrorSym -> ()
-      | Syntax.Sym type_name -> (
-          try
-            let t = Symbol_table.look type_name new_tenv in
-            match t with
-            | Types.Name (sym, typ) -> (
-                match !typ with
-                | None -> typ := Some (trans_ty (new_tenv, ty))
-                | Some _ ->
-                    print_error Name_error
-                      (Printf.sprintf "type %s is already declared"
-                         (Symbol.name sym))
-                      tpos)
-            | _ ->
-                print_error Name_error
-                  (Printf.sprintf "type %s is already declared"
-                     (Symbol.name type_name))
-                  tpos
-          with Not_found ->
-            print_error Name_error
-              (Printf.sprintf "type %s is not declared" (Symbol.name type_name))
-              tpos))
-    t;
+  List.iter (trans_type_body new_tenv) t;
   { venv; tenv = new_tenv }
 
 and trans_ty (tenv, ty) =
   match ty with
-  | NameTy (sym, pos) -> find_type tenv sym pos
+  | NameTy (sym, pos) -> find_rec_type tenv sym pos
   | RecordTy fields ->
       let record_fields =
         List.map
@@ -613,11 +667,11 @@ and trans_ty (tenv, ty) =
             match name with
             | Syntax.ErrorSym -> (Symbol.dummy, Types.Error)
             | Syntax.Sym field_name ->
-                let field_type = find_type tenv typ pos in
+                let field_type = find_rec_type tenv typ pos in
                 (field_name, field_type))
           fields
       in
       Types.Record (record_fields, ref ())
   | ArrayTy (sym, pos) ->
-      let array_type = find_type tenv sym pos in
+      let array_type = find_rec_type tenv sym pos in
       Types.Array (array_type, ref ())
