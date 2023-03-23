@@ -1,2 +1,3 @@
 (test
- (name semantic_analysis))
+ (name semantic_analyzer)
+ (libraries lexical_analysis semantic_action semantic_analysis))

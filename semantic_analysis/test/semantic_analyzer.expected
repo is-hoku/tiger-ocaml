@@ -1,0 +1,98 @@
+unit
+unit
+unit
+array of int
+TypeError: expression 5 + 6 has type int but expected type unit in line 2 at character 5
+error
+TypeError: expression   has type string but expected type int in line 2 at character 3
+error
+SyntaxError: invalid syntax in line 6 at character 30
+error
+TypeError: expression df has type string but expected type int in line 3 at character 3
+error
+TypeError: expression rec has type {name:string,id:int} but expected type int or string in line 12 at character 10
+TypeError: expression arr has type array of int but expected type int or string in line 12 at character 10
+error
+TypeError: expression 3 has type int but expected type unit in line 3 at character 2
+error
+TypeError: type c has an illegal type circulation in line 4 at character 8
+TypeError: type d has an illegal type circulation in line 6 at character 8
+error
+NameError: type treelist is not declared in line 4 at character 30
+error
+NameError: function do_nothing2 is not declared in line 5 at character 14
+error
+NameError: variable a is not declared in line 8 at character 16
+error
+array of name of myint(rec)
+SyntaxError: invalid syntax in line 3 at character 23
+NameError: variable i is not declared in line 3 at character 18
+error
+TypeError: expression nfactor(n - 1) has type unit but expected type int in line 8 at character 11
+error
+NameError: field nam is not declared in record in line 7 at character 5
+error
+TypeError: expression 3 has type int but expected type string in line 7 at character 13
+error
+TypeError: variable d has type int but expected type array in line 5 at character 2
+error
+TypeError: variable f has type int but expected type record in line 5 at character 2
+error
+TypeError: expression var has type string but expected type int in line 3 at character 3
+error
+int
+TypeError: expression rec1 has type {name:string,id:int} but expected type {name:string,id:int} in line 7 at character 19
+NameError: variable rec1 is not declared in line 9 at character 5
+error
+TypeError: expression arr1 has type array of int but expected type array of int in line 7 at character 19
+NameError: variable arr1 is not declared in line 9 at character 5
+error
+{name:string,age:int}
+int
+TypeError: expression a has type string but expected type int in line 3 at character 10
+NameError: variable a is not declared in line 5 at character 2
+error
+TypeError: expression arrayty and   has different types int and string in line 6 at character 17
+TypeError: required type declared variable in line 6 at character 4
+error
+NameError: type rectype is not declared in line 3 at character 16
+TypeError: required type declared variable in line 3 at character 4
+error
+TypeError: argument one has type string but expected typeint in line 5 at character 2
+error
+TypeError: argument one has type string but expected typeint in line 5 at character 2
+TypeError: the number of arguments for function g is not correct in line 5 at character 2
+error
+TypeError: the number of arguments for function g is not correct in line 5 at character 2
+error
+int
+NameError: type a is already declared in line 4 at character 5
+error
+NameError: function g is already declared in line 4 at character 9
+error
+int
+TypeError: function g return type int but expected type unit in line 3 at character 9
+error
+int
+unit
+SyntaxError: invalid syntax in line 4 at character 12
+TypeError: required type declared variable in line 4 at character 4
+NameError: variable a is not declared in line 6 at character 2
+error
+unit
+TypeError: required type declared variable in line 5 at character 4
+NameError: variable a is not declared in line 7 at character 2
+error
+int
+int
+int
+SyntaxError: invalid syntax in line 5 at character 20
+TypeError: required type declared variable in line 5 at character 4
+NameError: variable a is not declared in line 7 at character 2
+error
+{hd:int,tl:name of intlist(rec)}
+unit
+int
+int
+TypeError: expression 13 and   has different types int and string in line 3 at character 2
+error
