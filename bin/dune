@@ -1,5 +1,0 @@
-(executable
- (package tiger)
- (public_name tiger)
- (name main)
- (libraries straight_line_program))

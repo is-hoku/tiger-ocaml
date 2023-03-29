@@ -152,6 +152,7 @@ exp:
 | LPAREN seqs RPAREN { Printf.sprintf "( (%s) )" $2 }
 | INT { "( int )" }
 | STRING { "( string )" }
+| LPAREN RPAREN { Printf.sprintf "( () )"}
 | ID LPAREN params RPAREN { Printf.sprintf "( id (%s) )" $3 }
 | exp PLUS exp { Printf.sprintf "( %s + %s )" $1 $3 }
 | exp MINUS exp { Printf.sprintf "( %s - %s )" $1 $3 }

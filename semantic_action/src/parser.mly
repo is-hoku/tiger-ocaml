@@ -152,6 +152,7 @@ exp:
 | LPAREN seqs RPAREN { $2 }
 | INT { Syntax.IntExp $1 }
 | STRING { Syntax.StringExp ($1, Parsing.rhs_end_pos 1) }
+| LPAREN RPAREN { Syntax.SeqExp [] }
 | ID LPAREN params RPAREN { Syntax.CallExp {func = Syntax.Sym (Symbol.from_string $1); args = $3; pos = Parsing.rhs_end_pos 1} }
 | exp PLUS exp { Syntax.OpExp {left = $1; oper = Syntax.PlusOp; right = $3; pos = Parsing.rhs_end_pos 2} }
 | exp MINUS exp { Syntax.OpExp {left = $1; oper = Syntax.MinusOp; right = $3; pos = Parsing.rhs_end_pos 2} }

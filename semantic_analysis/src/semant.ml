@@ -345,12 +345,17 @@ and check_record venv tenv inside_loop fields typ pos =
               Types.Error))
 
 and check_seq venv tenv inside_loop exps =
+  let is_break = ref false in
   List.fold_left
     (fun { exp = _; ty } (expr, _) ->
       if ty = Types.Error then { exp = (); ty = Types.Error }
       else
         match expr with
-        | Syntax.BreakExp _ -> trans_exp (venv, tenv, false, expr)
+        | Syntax.BreakExp _ ->
+            if !is_break then trans_exp (venv, tenv, false, expr)
+            else (
+              is_break := true;
+              trans_exp (venv, tenv, inside_loop, expr))
         | _ -> trans_exp (venv, tenv, inside_loop, expr))
     { exp = (); ty = Types.Unit }
     exps

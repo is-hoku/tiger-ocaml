@@ -1,3 +1,5 @@
+NameError: unexpected break in line 7 at character 57
+error
 unit
 unit
 unit
@@ -6,8 +8,7 @@ TypeError: expression 5 + 6 has type int but expected type unit in line 2 at cha
 error
 TypeError: expression   has type string but expected type int in line 2 at character 3
 error
-SyntaxError: invalid syntax in line 6 at character 30
-error
+unit
 TypeError: expression df has type string but expected type int in line 3 at character 3
 error
 TypeError: expression rec has type {name:string,id:int} but expected type int or string in line 12 at character 10
@@ -25,7 +26,6 @@ error
 NameError: variable a is not declared in line 8 at character 16
 error
 array of name of myint(rec)
-SyntaxError: invalid syntax in line 3 at character 23
 NameError: variable i is not declared in line 3 at character 18
 error
 TypeError: expression nfactor(n - 1) has type unit but expected type int in line 8 at character 11
@@ -75,9 +75,7 @@ TypeError: function g return type int but expected type unit in line 3 at charac
 error
 int
 unit
-SyntaxError: invalid syntax in line 4 at character 12
-TypeError: required type declared variable in line 4 at character 4
-NameError: variable a is not declared in line 6 at character 2
+TypeError: expression a has type unit but expected type int in line 6 at character 4
 error
 unit
 TypeError: required type declared variable in line 5 at character 4

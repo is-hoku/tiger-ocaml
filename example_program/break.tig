@@ -1,0 +1,9 @@
+let
+	var a:= 0
+in 
+	(
+	if a = 0 then (); /* OK: () has type unit */
+	for i:=0 to 100 do (a; break; if a = 0 then break; ()); /* OK */
+	for i:=0 to 100 do (a; break; if a = 0 then (break;break); ()) /* NG: multiple break */
+	)
+end

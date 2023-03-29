@@ -12,6 +12,7 @@ let semant venv tenv inside_loop exp =
 
 let test_cases =
   [
+    "break.tig";
     "merge.tig";
     "queens.tig";
     "recursive_type.tig";
