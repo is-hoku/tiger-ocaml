@@ -1,0 +1,4 @@
+(library
+ (public_name activation_record)
+ (name activation_record)
+ (libraries lexical_analysis semantic_action semantic_analysis))

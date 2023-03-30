@@ -57,4 +57,10 @@
  (description "semantic analyzer")
  (depends ocaml dune))
 
+(package
+ (name activation_record)
+ (synopsis "Activation Record")
+ (description "activation record")
+ (depends ocaml dune))
+
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project

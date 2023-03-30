@@ -1,0 +1,4 @@
+(executable
+ (package tiger)
+ (public_name tiger)
+ (name main))

@@ -1,0 +1,5 @@
+(executable
+ (public_name activation_record)
+ (name semantic_analyzer)
+ (package activation_record)
+ (libraries lexical_analysis semantic_action semantic_analysis activation_record))
