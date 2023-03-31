@@ -528,7 +528,6 @@ and check_let venv tenv inside_loop decs body level =
   let { exp = _; ty } =
     trans_exp (new_venv, new_tenv, inside_loop, body, level)
   in
-  print_endline (Translate.string_of_level level);
   if err then Types.Error else ty
 
 and check_array venv tenv inside_loop typ size init pos level =
@@ -615,9 +614,6 @@ and trans_var_dec venv tenv inside_loop dec_error name escape typ init pos level
       match name with
       | Syntax.ErrorSym -> ({ venv; tenv }, true)
       | Syntax.Sym var_name ->
-          print_endline
-            (Printf.sprintf "%s: %s" (Symbol.name var_name)
-               (string_of_bool !escape));
           let { exp = _; ty = init_ty } =
             trans_exp (venv, tenv, inside_loop, init, level)
           in

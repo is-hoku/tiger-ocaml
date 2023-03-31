@@ -1,2 +1,3 @@
 (test
- (name activation_record))
+ (name semantic_analyzer)
+ (libraries lexical_analysis semantic_action semantic_analysis activation_record))

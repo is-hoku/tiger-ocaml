@@ -1,0 +1,6 @@
+{index(1), label(102), formals(f0, t102, t103, t104, t105, f5, f6, f7), locals(0)}
+{index(3), label(111), formals(f0, t111), locals(0)}
+{index(2), label(107), formals(f0, f1, t107, t108, t109, f5), locals(1)}
+{index(4), label(113), formals(f0, t113), locals(0)}
+{index(0), label(101), formals(), locals(2)}
+unit

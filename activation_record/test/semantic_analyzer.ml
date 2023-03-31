@@ -14,7 +14,7 @@ let semant venv tenv inside_loop exp level =
   Semant.trans_exp (venv, tenv, inside_loop, exp, level)
 
 let () =
-  let fin = open_in Sys.argv.(1) in
+  let fin = open_in "../../example_program/func1.tig" in
   let buf = Lexing.from_channel fin in
   try
     let ast = parse buf in
@@ -22,7 +22,7 @@ let () =
     let level = Translate.outermost in
     let expty = semant Env'.base_venv Env'.base_tenv false ast level in
     print_endline (Translate.string_of_level level);
-    print_string (Types.string_of_ty expty.ty);
+    print_endline (Types.string_of_ty expty.ty);
     close_in fin
   with
   | Lexer.Syntax_error e ->
